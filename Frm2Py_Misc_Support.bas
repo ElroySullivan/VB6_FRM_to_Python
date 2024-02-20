@@ -1,6 +1,8 @@
 Attribute VB_Name = "mod_Frm2Py_Misc_Support"
 Option Explicit
 '
+Private Declare Function WideCharToMultiByte Lib "kernel32" (ByVal codepage As Long, ByVal dwFlags As Long, ByVal lpWideCharStr As Long, ByVal cchWideChar As Long, ByVal lpMultiByteStr As Long, ByVal cchMultiByte As Long, ByVal lpDefaultChar As Long, ByVal lpUsedDefaultChar As Long) As Long
+'
 
 
 Public Sub PrintWidgetFontLines(uFont As FontType)
@@ -18,7 +20,28 @@ Public Sub PrintWidgetFontLines(uFont As FontType)
 End Sub
 
 
-
+Public Function Utf8(s As String) As String
+    ' Returns a UTF-8 string with it's bytes sitting in the low-order-byte of characters of a UCS-2 string.
+    ' This is perfect when write this string using Print#,... and the software reading it will expect UTF-8.
+    '
+    Const Utf8CodePage As Long = 65001
+    Dim iLen        As Long
+    iLen = WideCharToMultiByte(Utf8CodePage, 0&, StrPtr(s), Len(s), 0&, 0&, 0&, 0&)
+    If iLen = 0& Then Exit Function
+    '
+    Dim bb()     As Byte
+    ReDim bb(iLen - 1&)
+    Call WideCharToMultiByte(Utf8CodePage, 0&, StrPtr(s), Len(s), VarPtr(bb(0&)), iLen, 0&, 0&)
+    ' We've now got a UTF-8 string in bb().
+    Utf8 = String$(iLen, vbNullChar)
+    Dim i As Long
+    For i = 1& To iLen
+        ' We can't use StrConv because it doesn't understand UTF-8.
+        ' We're making a UCS-2 string that "spoofs" a UTF-8 string, so
+        ' when written, it'll think it's converting to ANSI, but it'll actually be UTF-8.
+        Mid$(Utf8, i, 1&) = Chr$(bb(i - 1&))
+    Next
+End Function
 
 Public Function TrueFalse(b As Boolean) As String
     If b Then
@@ -77,9 +100,10 @@ Public Function GetStringValue(sLine As String) As String
         If Left$(GetStringValue, 1&) = """" Then GetStringValue = Mid$(GetStringValue, 2&)
         If Right$(GetStringValue, 1&) = """" Then GetStringValue = Left$(GetStringValue, Len(GetStringValue) - 1&)
     End If
-    ' Escape any single-quote values and && values.
+    ' Escape any single-quote values and && values, and handle extended-ANSI characters (make them UTF-8).
     GetStringValue = Replace(GetStringValue, "'", "\'")
     GetStringValue = Replace(GetStringValue, "&&", "&")
+    GetStringValue = Utf8(GetStringValue)
 End Function
 
 Public Function FixMultiString(s As String, iIndent As Long) As String
