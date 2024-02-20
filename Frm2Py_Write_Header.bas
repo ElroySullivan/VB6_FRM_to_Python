@@ -15,7 +15,7 @@ Public Sub WritePythonHeader()
     Print #ghPy, "from PyQt5.QtCore import Qt, QRect, pyqtSignal"
     Print #ghPy, "from PyQt5.QtGui import QIcon, QPixmap, QPalette, QColor, QTextCursor, QTextBlockFormat"
     Print #ghPy, "from PyQt5.QtGui import QFont, QFontMetrics, QPainter, QPen, QBrush"
-    Print #ghPy, "from PyQt5.QtWidgets import QMainWindow, QAction"
+    Print #ghPy, "from PyQt5.QtWidgets import QMainWindow, QAction, QDesktopWidget"
     Print #ghPy, "from PyQt5.QtWidgets import QLabel, QPushButton, QCheckBox, QRadioButton, QButtonGroup"
     Print #ghPy, "from PyQt5.QtWidgets import QFrame, QListWidget, QListWidgetItem, QComboBox"
     Print #ghPy, "#                          single line   multi line    like RTB"
