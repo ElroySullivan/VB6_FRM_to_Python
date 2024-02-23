@@ -15,6 +15,7 @@ Public Sub WritePythonFormAndWidgetClasses()
         Print #ghPy, "    paint_event_raised = pyqtSignal() # So we can 'emit()' our paintEvent to other widgets for this container."
         Print #ghPy, "    def __init__(self, parent=None):"
         Print #ghPy, "        super().__init__(parent)"
+        Print #ghPy, "        self.Vb6Class = 'Form'"
         Print #ghPy, "        self.Name = '"; .Name; "'"
         Print #ghPy, "        self.RadioGroup = QButtonGroup(self) # Option button group for this container (VB6 style)."
         '
@@ -23,6 +24,18 @@ Public Sub WritePythonFormAndWidgetClasses()
         Print #ghPy, vbNullString
         Print #ghPy, "        # Form's initial properties, from VB6 FRM file."
         Print #ghPy, vbNullString
+        ' Font.
+        Dim sFont As String
+        Print #ghPy, "        font = QFont('"; .Font.Name; "', "; CStr(CLng(.Font.Size)); ")"
+        If .Font.Bold Then nop:           sFont = sFont & "font.setBold(True); "
+        If .Font.Italic Then nop:         sFont = sFont & "font.setItalic(True); "
+        If .Font.Underline Then nop:      sFont = sFont & "font.setUnderline(True); "
+        If .Font.Strikethrough Then nop:  sFont = sFont & "font.setStrikeOut(True); "
+      If Len(sFont) Then
+        sFont = Left$(sFont, Len(sFont) - 2&) ' Clean it up.
+        Print #ghPy, "        "; sFont
+      End If
+        Print #ghPy, "        self.setFont(font)"
         '
         ' The Tag property.
         Print #ghPy, "        self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
@@ -57,10 +70,10 @@ Public Sub WritePythonFormAndWidgetClasses()
         '
         ' Form's icon.
       If Len(.Icon) Then
-        Print #ghPy, "        self.icon_spec = os.path.join(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Images'), '"; .Icon; "')"
-        Print #ghPy, "        self.setWindowIcon(QIcon(self.icon_spec))"
+        Print #ghPy, "        self.__IconSpec = os.path.join(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Images'), '"; .Icon; "')"
+        Print #ghPy, "        self.setWindowIcon(QIcon(self.__IconSpec))"
       Else
-        Print #ghPy, "        self.icon_spec = None"
+        Print #ghPy, "        self.__IconSpec = None"
       End If
         '
         ' Caption.
@@ -86,10 +99,10 @@ Public Sub WritePythonFormAndWidgetClasses()
         Print #ghPy, "        self.setWindowFlags(self.windowFlags() & ~Qt.WindowMaximizeButtonHint)"
       End Select ' Else just leave the defaults.
         '
-        ' Note on visibility.  This is just controlled with .Show() or .Hide(), so there's no need to address it here.
-        '
-        ' Enabled.
+        ' Enabled & Visible.
         Print #ghPy, "        self.setEnabled("; TrueFalse(.Enabled); ")"
+        ' Note on visibility.  This is just controlled with .Show() or .Hide(), so there's no need to address it here.
+        'Print #ghPy, "        self.setVisible("; TrueFalse(.Visible); ")" ' We will still have a "Visible" property.
         '
         ' BackColor.
         Print #ghPy, "        self.setAutoFillBackground(True)"
@@ -99,11 +112,11 @@ Public Sub WritePythonFormAndWidgetClasses()
         '
         ' Picture.  And we fit it to the form's client area in the paintEvent.
       If Len(.Picture) Then
-        Print #ghPy, "        self.image_spec = os.path.join(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Images'), '"; .Picture; "')"
-        Print #ghPy, "        self.background_pixmap = QPixmap(self.image_spec)"
+        Print #ghPy, "        self.__ImageSpec = os.path.join(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Images'), '"; .Picture; "')"
+        Print #ghPy, "        self.__BackPixmap = QPixmap(self.__ImageSpec)"
       Else
-        Print #ghPy, "        self.image_spec = ''"
-        Print #ghPy, "        self.background_pixmap = None"
+        Print #ghPy, "        self.__ImageSpec = ''"
+        Print #ghPy, "        self.__BackPixmap = None"
       End If
         '
         ' Any menu on the form.
@@ -118,14 +131,55 @@ Public Sub WritePythonFormAndWidgetClasses()
         '
         ' Final form's constructor (__init__) things.
         InstantiateAllTheWidgets
+        GetRidOfControlsNotProcessed
         SetWidgetTabOrders
+        BuildWidgetsDictionary
         '
-        ' Form's internal event procedures.
+        ' Back to form's class, but out of __init__.
         '
         Print #ghPy, vbNullString
         Print #ghPy, "    # ****************************************************************"
         Print #ghPy, "    # We're still in our form's class, but no longer in __init__."
         Print #ghPy, "    # ****************************************************************"
+        '
+        ' Form's methods & properties.
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "    # Form's methods & properties (VB6 style).  For others, use PyQt members."
+        ' Font.
+        Print #ghPy, vbNullString
+        Print #ghPy, "    # Note that, for this main form, this font doesn't affect the caption, as that's controlled by the OS."
+        Print #ghPy, "    @property                   # No setter needed, as this is all handled by the clsVb6Font class."
+        Print #ghPy, "    def Font(self):             # The return isn't meant to be saved as the widget stays attached to clsFont."
+        Print #ghPy, "        return clsVb6Font(self) # Just use this to Get/Set the font's properties."
+        ' Visible.
+        Print #ghPy, vbNullString
+        Print #ghPy, "    @property"
+        Print #ghPy, "    def Visible(self):"
+        Print #ghPy, "        return self.isVisible()"
+        Print #ghPy, "    @Visible.setter"
+        Print #ghPy, "    def Visible(self, new_value: bool):"
+        Print #ghPy, "        self.setVisible(new_value)"
+        Print #ghPy, "        self.repaint()"
+        ' Enabled.
+        Print #ghPy, vbNullString
+        Print #ghPy, "    @property"
+        Print #ghPy, "    def Enabled(self):"
+        Print #ghPy, "        return self.isEnabled()"
+        Print #ghPy, "    @Enabled.setter"
+        Print #ghPy, "    def Enabled(self, new_value: bool):"
+        Print #ghPy, "        self.setEnabled(new_value)"
+        ' Caption.
+        Print #ghPy, vbNullString
+        Print #ghPy, "    @property"
+        Print #ghPy, "    def Caption(self):"
+        Print #ghPy, "        return self.windowTitle()"
+        Print #ghPy, "    @Caption.setter"
+        Print #ghPy, "    def Caption(self, new_value: str):"
+        Print #ghPy, "        self.setWindowTitle(new_value)"
+        '
+        ' Form's internal event procedures.
+        '
         Print #ghPy, vbNullString
         Print #ghPy, "    # Internal event procedures.  They'll try and call external ones, if found."
         '
@@ -193,7 +247,7 @@ Public Sub WritePythonFormAndWidgetClasses()
         Print #ghPy, vbNullString
         Print #ghPy, "    def paintEvent(self, event):"
         Print #ghPy, "        super().paintEvent(event) # Call the base class paintEvent to ensure default painting."
-        Print #ghPy, "        if self.background_pixmap: QPainter(self).drawPixmap(0, 0, self.width(), self.height(), self.background_pixmap)"
+        Print #ghPy, "        if self.__BackPixmap: QPainter(self).drawPixmap(0, 0, self.width(), self.height(), self.__BackPixmap)"
         Print #ghPy, "        if '"; .Name; "_Paint' in globals(): "; .Name; "_Paint(self, event)"
         Print #ghPy, "        # Be sure to do .emit() after any picture, so lines get drawn on top of the picture."
         Print #ghPy, "        self.paint_event_raised.emit() # This allows other widgets to 'see' this event, with binding."
@@ -234,8 +288,8 @@ Public Sub WritePythonFormAndWidgetClasses()
       End If
     End With
     '
-    'DoStandardFormMethodsAndProperties     ' We no longer do any of these.  Let the user use PyQt instead.
-    DoWidgets_Class_Meth_Prop_IntEvt
+    DoAllWidgetsClasses
+    DoWidget_Arrays
 End Sub
     
 Private Sub AddTheMenus(sParent As String)
@@ -259,12 +313,8 @@ Private Sub AddTheMenus(sParent As String)
                         Print #ghPy, "        self."; .Name; " = QAction('"; .Caption; "', self)"
                         Print #ghPy, "        self."; .Name; ".triggered.connect(self."; .Name; "_action)"
                         Print #ghPy, "        "; sParent; "_menu.addAction(self."; .Name; ")"
-                      If .Enabled = False Then
-                        Print #ghPy, "        self."; .Name; ".setEnabled(False)"
-                      End If
-                      If .Visible = False Then
-                        Print #ghPy, "        self."; .Name; ".setVisible(False)"
-                      End If
+                        Print #ghPy, "        self."; .Name; ".setEnabled("; TrueFalse(.Enabled); "}"
+                        Print #ghPy, "        self."; .Name; ".setVisible("; TrueFalse(.Visible); "}"
                     End Select
                 End If
             End If
@@ -274,7 +324,7 @@ End Sub
     
     
     
-Public Sub WritePythonEventsAndTestCode()
+Public Sub WritePythonEventsCode()
     ' Called by main form.  Depending on option selected, this might go into the _EVENTS file.
     '
     ' If we don't overwrite, skip this ... but we changed it to write a (##) file instead.
@@ -318,6 +368,7 @@ Private Sub DoFormEventProcedures()
         Print #ghPy, vbNullString
         Print #ghPy, "# ****************************************"
         Print #ghPy, "# Form level events for coding."
+        Print #ghPy, "# Delete them if you don't need them."
         Print #ghPy, "# ****************************************"
         '
         Print #ghPy, vbNullString
@@ -351,8 +402,9 @@ Private Sub DoFormEventProcedures()
         Print #ghPy, "#    print('"; .Name; "_KeyRelease', self.Name)"
         '
         Print #ghPy, vbNullString
-        Print #ghPy, "def "; .Name; "_Leave(self, event):"
-        Print #ghPy, "    print('"; .Name; "_Leave', self.Name)"
+        Print #ghPy, "# This one is noisy, so it's initially commented out."
+        Print #ghPy, "#def "; .Name; "_Leave(self, event):"
+        Print #ghPy, "#    print('"; .Name; "_Leave', self.Name)"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "# This one is noisy, so it's initially commented out."

@@ -473,14 +473,15 @@ Public Function PopulatedCtlsUi() As Boolean
         End If
     Next
     '
-    ' For now, just rename control arrays.
+    ' Rename the control arrays, and also set .OrigName.
+    ' We'll also create a separate object to manage these.
+    ' Just as a note, this does have a small chance of a conflict,
+    ' where a non-indexed control is already named ..._1 etc,
+    ' but we ignore this possibility.
     For pCtl = 0& To UBound(guCtls)
         With guCtls(pCtl)
-            If .IsIndexed Then
-                .Name = .Name & "_" & CStr(.Index)
-                .IsIndexed = False
-                .Index = 0&
-            End If
+            .OrigName = .Name
+            If .IsIndexed Then .Name = .Name & "_" & CStr(.Index)
         End With
     Next
     '

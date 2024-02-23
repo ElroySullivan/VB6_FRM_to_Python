@@ -175,7 +175,7 @@ Private Sub cmdBegin_Click()
     WriteModuleLevelProcsAndClasses
     '
     OpenPythonEventsFile ' If necessary, this will close the main Python file.
-    WritePythonEventsAndTestCode
+    WritePythonEventsCode
     WriteTestingCode
     ClosePythonFile
     CloseFrxFile

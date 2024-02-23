@@ -55,7 +55,9 @@ Public Type CtrlType
     NestLevel       As Long     ' 0 = directly on the form.
     HasChild        As Boolean  ' This container (or menu) has child(ren).
     Name            As String
+    OrigName        As String   ' Same as above, except for control arrays.
     IsIndexed       As Boolean
+    Index           As Long     ' Be sure to check IsIndexed before using.
     '
     GoodContainer   As Boolean  ' These are deleted before processing starts.
     ContainerName   As String   ' If on form, the form's name.
@@ -80,7 +82,6 @@ Public Type CtrlType
     Font            As FontType
     ForeColor       As Long
     Height          As Long
-    Index           As Long     ' Be sure to check IsIndexed before using.
     Interval        As Long
     LargeChange     As Long
     Left            As Long
