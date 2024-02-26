@@ -1,0 +1,410 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Segoe UI Semibold;}}
+{\*\generator Riched20 10.0.22621}\viewkind4\uc1 
+\pard\sl276\slmult1\qc\b\f0\fs36\lang9 Documentation for Converted Python Widgets\par
+
+\pard\sl276\slmult1  \fs28\par
+\fs24 This documentation outlines the VB6 controls that are converted, along with the VB6-style events, methods, & properties that are created for them in the conversion process.  There are "internal" events (within the widget's class) and "external" events, raised at the module level.  It's only the "external" events that are intended for further programming, and only those will be discussed.\par
+\par
+During conversion, the main form and all widgets are instantiated with the name given to them within the VB6 IDE's properties window.  In the following, \i form\i0  (italicized) will indicate the form's name, and \i widget \i0 (italicized) will indicate the specific widget's (VB6 control's) name.  The class of widget used to create the Python widget will be given in parentheses.\par
+\par
+For the properties, all are read-write, except where otherwise indicated.\par
+\par
+All converted widgets (VB6 controls) with the exception of the VB6 Line and Shape controls, the Python widgets inherit one of the PyQt5 widget classes.  As such, all the methods and properties of that widget class are also available to the widget, and aren't discussed herein.\par
+
+\pard\sl276\slmult1\qc _______________________________________________________________________________\par
+
+\pard\sl276\slmult1\par
+Before we get into the events, methods, & properties of the widgets, let's discussing VB6 control arrays (with Indexes).  A similar mechanism is implemented in the Python converted code.  Each widget has an \ul\i IsIndexed\ulnone\i0  property as well as an \ul\i Index\ulnone\i0  property.  However, the \ul\i Index\ulnone\i0  property is meaningless if \ul\i IsIndexed=False\ulnone\i0 .\par
+\par
+If \ul\i IsIndexed=True\ulnone\i0 , then the widgets can be referenced as \i form_name.widget_name\i0 (Index).\i property\i0 .  Alternatively, they can be referenced as \i form_name.widget_name\i0 _#.\i property \i0 (where # is the Index).  It's done this way so that each indexed widget can have its own set of properties (as it's done in VB6).  But all indexed widgets with the same base name raise the same event names (also as it's done in VB6).\par
+
+\pard\sl276\slmult1\qc _______________________________________________________________________________\par
+
+\pard\sl276\slmult1\par
+The form (VB.Form -> QMainWindow):\par
+\tab Events:\par
+\tab\tab\i form\i0 _Close(self, event)\par
+\tab\tab\i form\i0 _DoubleClick(self, event)\par
+\tab\tab\i form\i0 _FocusIn(self, event)\par
+\tab\tab\i form\i0 _FocusOut(self, event)\par
+\tab\tab\i form\i0 _Hide(self, event)\par
+\tab\tab\i form\i0 _KeyPress(self, event)\par
+\tab\tab\i form\i0 _KeyRelease(self, event)\par
+\tab\tab\i form\i0 _Leave(self, event)\par
+\tab\tab\i form\i0 _MouseMove(self, event)\par
+\tab\tab\i form\i0 _MousePress(self, event)\par
+\tab\tab\i form\i0 _MouseRelease(self, event)\par
+\tab\tab\i form\i0 _Move(self, event)\par
+\tab\tab\i form\i0 _Paint(self, event)\par
+\tab\tab\i form\i0 _Resize(self, event)\par
+\tab\tab\i form\i0 _Show(self, event)\par
+\tab\tab\i form\i0 _Wheel(self, event)\par
+\tab Methods:\par
+\tab\tab\i form\i0 .Move(new_Left, new_Top, new_ClientWidth, new_ClientHeight)\par
+\tab Properties:\par
+\tab\tab\i form\i0 .Caption [ = 'new_value']\par
+\tab\tab\i form\i0 .Enabled [ = True/False]\par
+\tab\tab\i form\i0 .Font.Bold [ = True/False]\par
+\tab\tab\i form\i0 .Font.Italic [ = True/False]\par
+\tab\tab\i form\i0 .Font.Name [ = 'new_value']\par
+\tab\tab\i form\i0 .Font.Size [ = new_value (points)]\par
+\tab\tab\i form\i0 .Font.Strikeout [ = True/False]\par
+\tab\tab\i form\i0 .Font.Underline [ = True/False]\par
+\tab\tab\i form\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .Name (read-only)\par
+\tab\tab\i form\i0 .RadioGroup (read-only, QButtonGroup object)\par
+\tab\tab\i form\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form,\i0 Top [ = new_value]\par
+\tab\tab\i form\i0 .Vb6Class (read-only)\par
+\tab\tab\i form\i0 .Visible [ = True/False]\par
+\tab\tab\i form\i0 .Widgets (a Python dict for iterating the form's widgets)\par
+\tab\tab\i form.\i0 Width [ = new_value]\par
+\par
+CheckBox (QCheckBox):\par
+\tab Events:\par
+\tab\tab\i widget\i0 _Click( [Index, ] self, state)\par
+\tab Methods:\par
+\tab\tab\i form.widget\i0 .Move(new_Left, new_Top, new_Width, new_Height)\par
+\tab Properties:\par
+\tab\tab\i form\i0 .\i widget\i0 .Caption [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Container (read-only, widget object containing this widget)\par
+\tab\tab\i form\i0 .\i widget\i0 .Enabled[ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Bold [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Italic [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Name [ = 'new_value']\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Size [ = new_value (points)]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Strikeout [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Underline [ = True/False]\par
+\tab\tab\i form.widget\i0 .Form (read-only, QMainWindow object containing this widget)\par
+\tab\tab\i form.widget\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Index (read-only)\par
+\i\tab\tab form\i0 .\i widget\i0 .IsIndexed (read-only)\par
+\tab\tab\i form.widget\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Name (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .ToolTipText [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Top [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Vb6Class (read-only)\par
+\tab\tab\i form.widget\i0 .Value [ = new_value (0=unchecked, 1=grayed, 2=checked)]\par
+\tab\tab\i form\i0 .\i widget\i0 .Visible[ = True/False]\par
+\tab\tab\i form.widget\i0 .Width [ = new_value]\par
+\par
+ComboBox (QComboBox):\par
+\tab Events:\par
+\tab\tab\i widget\i0 _Change( [Index, ] self, text)\par
+\tab Methods:\par
+\tab\tab\i form.widget\i0 .Move(new_Left, new_Top, new_Width, new_Height)\par
+\tab Properties:\par
+\tab\tab\i form\i0 .\i widget\i0 .Caption [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Container (read-only, widget object containing this widget)\par
+\tab\tab\i form\i0 .\i widget\i0 .Enabled[ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Bold [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Italic [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Name [ = 'new_value']\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Size [ = new_value (points)]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Strikeout [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Underline [ = True/False]\par
+\tab\tab\i form.widget\i0 .Form (read-only, QMainWindow object containing this widget)\par
+\tab\tab\i form.widget\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Index (read-only)\par
+\i\tab\tab form\i0 .\i widget\i0 .IsIndexed (read-only)\par
+\tab\tab\i form.widget\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Name (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Text [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .ToolTipText [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Top [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Vb6Class (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Visible[ = True/False]\par
+\tab\tab\i form.widget\i0 .Width [ = new_value]\par
+\par
+CommandButton (QPushButton):\par
+\tab Events:\par
+\tab\tab\i widget\i0 _Click( [Index, ] self, event)\par
+\tab Methods:\par
+\tab\tab\i form.widget\i0 .Move(new_Left, new_Top, new_Width, new_Height)\par
+\tab Properties:\par
+\tab\tab\i form\i0 .\i widget\i0 .Caption [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Container (read-only, widget object containing this widget)\par
+\tab\tab\i form\i0 .\i widget\i0 .Enabled[ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Bold [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Italic [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Name [ = 'new_value']\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Size [ = new_value (points)]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Strikeout [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Underline [ = True/False]\par
+\tab\tab\i form.widget\i0 .Form (read-only, QMainWindow object containing this widget)\par
+\tab\tab\i form.widget\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Index (read-only)\par
+\i\tab\tab form\i0 .\i widget\i0 .IsIndexed (read-only)\par
+\tab\tab\i form.widget\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Name (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .ToolTipText [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Top [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Vb6Class (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Visible[ = True/False]\par
+\tab\tab\i form.widget\i0 .Width [ = new_value]\par
+\par
+Frame (QFrame):\par
+\tab Events:\par
+\tab\tab none\par
+\tab Methods:\par
+\tab\tab\i form.widget\i0 .Move(new_Left, new_Top, new_Width, new_Height)\par
+\tab Properties:\par
+\tab\tab\i form\i0 .\i widget\i0 .Caption [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Container (read-only, widget object containing this widget)\par
+\tab\tab\i form\i0 .\i widget\i0 .Enabled[ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Bold [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Italic [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Name [ = 'new_value']\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Size [ = new_value (points)]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Strikeout [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Underline [ = True/False]\par
+\tab\tab\i form.widget\i0 .Form (read-only, QMainWindow object containing this widget)\par
+\tab\tab\i form.widget\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Index (read-only)\par
+\i\tab\tab form\i0 .\i widget\i0 .IsIndexed (read-only)\par
+\tab\tab\i form.widget\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Name (read-only)\par
+\tab\tab\i form.widget\i0 .RadioGroup (read-only, QButtonGroup object)\par
+\tab\tab\i form\i0 .\i widget\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .ToolTipText [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Top [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Vb6Class (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Visible[ = True/False]\par
+\tab\tab\i form.widget\i0 .Width [ = new_value]\par
+\par
+Image (QFrame):\par
+\tab Events:\par
+\tab\tab none\par
+\tab Methods:\par
+\tab\tab\i form.widget\i0 .Move(new_Left, new_Top, new_Width, new_Height)\par
+\tab Properties:\par
+\tab\tab\i form.widget\i0 .Container (read-only, widget object containing this widget)\par
+\tab\tab\i form\i0 .\i widget\i0 .Enabled[ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Bold [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Italic [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Name [ = 'new_value']\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Size [ = new_value (points)]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Strikeout [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Underline [ = True/False]\par
+\tab\tab\i form.widget\i0 .Form (read-only, QMainWindow object containing this widget)\par
+\tab\tab\i form.widget\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Index (read-only)\par
+\i\tab\tab form\i0 .\i widget\i0 .IsIndexed (read-only)\par
+\tab\tab\i form.widget\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Name (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .ToolTipText [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Top [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Vb6Class (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Visible[ = True/False]\par
+\tab\tab\i form.widget\i0 .Width [ = new_value]\par
+\par
+Label (QLabel):\par
+\tab Events:\par
+\tab\tab none\par
+\tab Methods:\par
+\tab\tab\i form.widget\i0 .Move(new_Left, new_Top, new_Width, new_Height)\par
+\tab Properties:\par
+\tab\tab\i form\i0 .\i widget\i0 .Caption [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Container (read-only, widget object containing this widget)\par
+\tab\tab\i form\i0 .\i widget\i0 .Enabled[ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Bold [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Italic [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Name [ = 'new_value']\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Size [ = new_value (points)]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Strikeout [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Underline [ = True/False]\par
+\tab\tab\i form.widget\i0 .Form (read-only, QMainWindow object containing this widget)\par
+\tab\tab\i form.widget\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Index (read-only)\par
+\i\tab\tab form\i0 .\i widget\i0 .IsIndexed (read-only)\par
+\tab\tab\i form.widget\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Name (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .ToolTipText [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Top [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Vb6Class (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Visible[ = True/False]\par
+\tab\tab\i form.widget\i0 .Width [ = new_value]\par
+\par
+Line (no PyQt5 inheritance):\par
+\tab Events:\par
+\tab\tab none\par
+\tab Methods:\par
+\tab\tab\i form.widget\i0 .Move(new_X1, new_Y1, new_X2, new_Y2)\par
+\tab Properties:\par
+\tab\tab\i form.widget\i0 .Container (read-only, widget object containing this widget)\par
+\tab\tab\i form\i0 .\i widget\i0 .Enabled[ = True/False] (non-functional)\par
+\tab\tab\i form.widget\i0 .Form (read-only, QMainWindow object containing this widget)\par
+\tab\tab\i form.widget\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Index (read-only)\par
+\i\tab\tab form\i0 .\i widget\i0 .IsIndexed (read-only)\par
+\tab\tab\i form.widget\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Name (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Top [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Vb6Class (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Visible[ = True/False]\par
+\tab\tab\i form.widget\i0 .Width [ = new_value]\par
+\tab\tab\par
+ListBox (QListWidget):\par
+\tab Events:\par
+\tab\tab\i widget\i0 _Click( [Index, ] self, item)\par
+\tab\tab\i widget\i0 _DblClick( [Index, ] self, item)\par
+\tab Methods:\par
+\tab\tab none\par
+\tab Properties:\par
+\tab\tab\i form.widget\i0 .Container (read-only, widget object containing this widget)\par
+\tab\tab\i form\i0 .\i widget\i0 .Enabled[ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Bold [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Italic [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Name [ = 'new_value']\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Size [ = new_value (points)]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Strikeout [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Underline [ = True/False]\par
+\tab\tab\i form.widget\i0 .Form (read-only, QMainWindow object containing this widget)\par
+\tab\tab\i form.widget\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Index (read-only)\par
+\i\tab\tab form\i0 .\i widget\i0 .IsIndexed (read-only)\par
+\tab\tab\i form.widget\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Name (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .ToolTipText [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Top [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Vb6Class (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Visible[ = True/False]\par
+\tab\tab\i form.widget\i0 .Width [ = new_value]\par
+\par
+OptionButton (QRadioButton):\par
+\tab Events:\par
+\tab\tab\i widget\i0 _Click( [Index, ] self, state)\par
+\tab Methods:\par
+\tab\tab\i form.widget\i0 .Move(new_Left, new_Top, new_Width, new_Height)\par
+\tab Properties:\par
+\tab\tab\i form\i0 .\i widget\i0 .Caption [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Container (read-only, widget object containing this widget)\par
+\tab\tab\i form\i0 .\i widget\i0 .Enabled[ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Bold [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Italic [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Name [ = 'new_value']\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Size [ = new_value (points)]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Strikeout [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Underline [ = True/False]\par
+\tab\tab\i form.widget\i0 .Form (read-only, QMainWindow object containing this widget)\par
+\tab\tab\i form.widget\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Index (read-only)\par
+\i\tab\tab form\i0 .\i widget\i0 .IsIndexed (read-only)\par
+\tab\tab\i form.widget\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Name (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .ToolTipText [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Top [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Vb6Class (read-only)\par
+\tab\tab\i form.widget\i0 .Value [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Visible[ = True/False]\par
+\tab\tab\i form.widget\i0 .Width [ = new_value]\par
+\par
+PictureBox (QFrame):\par
+\tab Events:\par
+\tab\tab none\par
+\tab Methods:\par
+\tab\tab\i form.widget\i0 .Move(new_Left, new_Top, new_Width, new_Height)\par
+\tab Properties:\par
+\tab\tab\i form.widget\i0 .Container (read-only, widget object containing this widget)\par
+\tab\tab\i form\i0 .\i widget\i0 .Enabled[ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Bold [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Italic [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Name [ = 'new_value']\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Size [ = new_value (points)]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Strikeout [ = True/False]\par
+\tab\tab\i form\i0 .\i widget\i0 .Font.Underline [ = True/False]\par
+\tab\tab\i form.widget\i0 .Form (read-only, QMainWindow object containing this widget)\par
+\tab\tab\i form.widget\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Index (read-only)\par
+\i\tab\tab form\i0 .\i widget\i0 .IsIndexed (read-only)\par
+\tab\tab\i form.widget\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Name (read-only)\par
+\tab\tab\i form.widget\i0 .RadioGroup (read-only, QButtonGroup object)\par
+\tab\tab\i form\i0 .\i widget\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .ToolTipText [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Top [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Vb6Class (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Visible[ = True/False]\par
+\tab\tab\i form.widget\i0 .Width [ = new_value]\par
+\par
+Shape (no PyQt5 inheritance):\par
+\tab Events:\par
+\tab\tab none\par
+\tab Methods:\par
+\tab\tab\i form.widget\i0 .Move(new_Left, new_Top, new_Width, new_Height)\par
+\tab Properties:\par
+\tab\tab\i form.widget\i0 .Container (read-only, widget object containing this widget)\par
+\tab\tab\i form\i0 .\i widget\i0 .Enabled[ = True/False] (non-functional)\par
+\tab\tab\i form.widget\i0 .Form (read-only, QMainWindow object containing this widget)\par
+\tab\tab\i form.widget\i0 .Height [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Index (read-only)\par
+\i\tab\tab form\i0 .\i widget\i0 .IsIndexed (read-only)\par
+\tab\tab\i form.widget\i0 .Left [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Name (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Tag [ = 'new_value']\par
+\tab\tab\i form.widget\i0 .Top [ = new_value]\par
+\tab\tab\i form\i0 .\i widget\i0 .Vb6Class (read-only)\par
+\tab\tab\i form\i0 .\i widget\i0 .Visible[ = True/False]\par
+\tab\tab\i form.widget\i0 .Width [ = new_value]\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+}
+ 

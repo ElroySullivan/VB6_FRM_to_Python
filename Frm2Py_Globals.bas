@@ -1,13 +1,19 @@
 Attribute VB_Name = "mod_Frm2Py__Globals"
 Option Explicit
 '
-Public Enum EventProcsEnum
-    NoEvents = 0&
-    OnlyUsedEvents = 1&
-    AllEvents = 2&
+Public Enum AppearanceEnum
+    vbFlat = 0&
+    vb3D = 1&
 End Enum
-#If False Then ' Intellisense fix.
-    Dim NoEvents, OnlyUsedEvents, AllEvents
+#If False Then
+    Dim vbFlat, vb3D
+#End If
+Public Enum BackStyleEnum
+    vbTransparent = 0& ' This conflicts with VBRUN.BorderStyleConstants, but it's the same value, so it's ok.
+    vbOpaque = 1&
+End Enum
+#If False Then
+    Dim vbTransparent, vbOpaque
 #End If
 '
 Public Type FontType
@@ -67,9 +73,9 @@ Public Type CtrlType
     ' These are the ones in the string array of properties.
     ' And also the ones indented under the control in the FRM file.
     Alignment       As AlignmentConstants
-    Appearance      As MSComctlLib.AppearanceConstants ' ccFlat or cc3D
+    Appearance      As AppearanceEnum
     BackColor       As Long
-    BackStyle       As Long
+    BackStyle       As BackStyleEnum
     BorderColor     As Long
     BorderStyle     As Long
     BorderWidth     As Long

@@ -1,4 +1,4 @@
-Attribute VB_Name = "mod_Frm2Py_Write___Main"
+Attribute VB_Name = "mod_Frm2Py_Write___MainForm"
 Option Explicit
 '
     
@@ -41,32 +41,43 @@ Public Sub WritePythonFormAndWidgetClasses()
         Print #ghPy, "        self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         '
         ' Border style and width/height.
+        Print #ghPy, "        self.__ClientWidth = "; CStr(.ClientWidth)
+        Print #ghPy, "        self.__ClientHeight = "; CStr(.ClientHeight)
       Select Case .BorderStyle
       Case vbBSNone         ' resize sets interior.
         Print #ghPy, "        self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)"
-        Print #ghPy, "        self.resize("; CStr(.ClientWidth); ", "; CStr(.ClientHeight); ")"
+        Print #ghPy, "        self.resize(self.__ClientWidth, self.__ClientHeight)"
+        Print #ghPy, "        self.__FixedSize = False"
       Case vbSizable        ' resize sets interior.
-        Print #ghPy, "        self.resize("; CStr(.ClientWidth); ", "; CStr(.ClientHeight); ")"
+        Print #ghPy, "        self.resize(self.__ClientWidth, self.__ClientHeight)"
+        Print #ghPy, "        self.__FixedSize = False"
       Case vbFixedSingle    ' setFixedSize sets interior.
-        Print #ghPy, "        self.setFixedSize("; CStr(.ClientWidth); ", "; CStr(.ClientHeight); ")"
+        Print #ghPy, "        self.setFixedSize(self.__ClientWidth, self.__ClientHeight)"
+        Print #ghPy, "        self.__FixedSize = True"
       Case vbSizableToolWindow
         Print #ghPy, "        self.setWindowFlags(self.windowFlags() | Qt.Tool)"
-        Print #ghPy, "        self.resize("; CStr(.ClientWidth); ", "; CStr(.ClientHeight); ")"
+        Print #ghPy, "        self.resize(self.__ClientWidth, self.__ClientHeight)"
+        Print #ghPy, "        self.__FixedSize = False"
       Case vbFixedToolWindow
         Print #ghPy, "        self.setWindowFlags(self.windowFlags() | Qt.Tool)"
-        Print #ghPy, "        self.setFixedSize("; CStr(.ClientWidth); ", "; CStr(.ClientHeight); ")"
+        Print #ghPy, "        self.setFixedSize(self.__ClientWidth, self.__ClientHeight)"
+        Print #ghPy, "        self.__FixedSize = True"
       End Select
         '
         ' Startup position and left/top.
       Select Case .StartUpPosition
       Case vbStartUpManual
-        Print #ghPy, "        self.move("; CStr(.ClientLeft - 4&); ", "; CStr(.ClientTop - 27&); ")" ' Adjustments for non-client area.
+        Print #ghPy, "        self.__l = "; CStr(.ClientLeft - 4&) ' This works regardless of borderstyle because designer always has standard form decoration.
+        Print #ghPy, "        self.__t = "; CStr(.ClientTop - 27&) ' This works regardless of borderstyle because designer always has standard form decoration.
       Case vbStartUpScreen
         Print #ghPy, "        centerPoint = QDesktopWidget().availableGeometry().center()"
-        Print #ghPy, "        self.move(centerPoint.x() - self.width() // 2, centerPoint.y() - self.height() // 2)"
+        Print #ghPy, "        self.__l = centerPoint.x() - self.width() // 2"
+        Print #ghPy, "        self.__t = centerPoint.y() - self.height() // 2"
       Case Else ' vbStartUpWindowsDefault
-        Print #ghPy, "        self.move(0, 0)"
+        Print #ghPy, "        self.__l = 0"
+        Print #ghPy, "        self.__t = 0"
       End Select
+        Print #ghPy, "        self.move(self.__l, self.__t)"
         '
         ' Form's icon.
       If Len(.Icon) Then
@@ -144,8 +155,59 @@ Public Sub WritePythonFormAndWidgetClasses()
         '
         ' Form's methods & properties.
         '
+        ' Left, Top, ClientWidth, ClientHeight.
         Print #ghPy, vbNullString
         Print #ghPy, "    # Form's methods & properties (VB6 style).  For others, use PyQt members."
+        Print #ghPy, vbNullString
+        Print #ghPy, "    def Move(self, new_left: int, new_top: int, new_ClientWidth: int, new_ClientHeight: int):"
+        Print #ghPy, "        self.__l = new_left"
+        Print #ghPy, "        self.__t = new_top"
+        Print #ghPy, "        self.__ClientWidth = new_ClientWidth"
+        Print #ghPy, "        self.__ClientHeight = new_ClientHeight"
+        Print #ghPy, "        if self.__FixedSize:"
+        Print #ghPy, "            self.setFixedSize(self.__ClientWidth, self.__ClientHeight)"
+        Print #ghPy, "        else:"
+        Print #ghPy, "            self.resize(self.__ClientWidth, self.__ClientHeight)"
+        Print #ghPy, "        self.move(self.__l, self.__t)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "    @property"
+        Print #ghPy, "    def Left(self):"
+        Print #ghPy, "        return self.__l"
+        Print #ghPy, "    @Left.setter"
+        Print #ghPy, "    def Left(self, new_value: int):"
+        Print #ghPy, "        self.__l = new_value"
+        Print #ghPy, "        self.move(self.__l, self.__t)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "    @property"
+        Print #ghPy, "    def Top(self):"
+        Print #ghPy, "        return self.__t"
+        Print #ghPy, "    @Top.setter"
+        Print #ghPy, "    def Top(self, new_value: int):"
+        Print #ghPy, "        self.__t = new_value"
+        Print #ghPy, "        self.move(self.__l, self.__t)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "    @property"
+        Print #ghPy, "    def ClientWidth(self):"
+        Print #ghPy, "        return self.__ClientWidth"
+        Print #ghPy, "    @ClientWidth.setter"
+        Print #ghPy, "    def ClientWidth(self, new_value: int):"
+        Print #ghPy, "        self.__ClientWidth = new_value"
+        Print #ghPy, "        if self.__FixedSize:"
+        Print #ghPy, "            self.setFixedSize(self.__ClientWidth, self.__ClientHeight)"
+        Print #ghPy, "        else:"
+        Print #ghPy, "            self.resize(self.__ClientWidth, self.__ClientHeight)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "    @property"
+        Print #ghPy, "    def ClientHeight(self):"
+        Print #ghPy, "        return self.__ClientHeight"
+        Print #ghPy, "    @ClientHeight.setter"
+        Print #ghPy, "    def ClientHeight(self, new_value: int):"
+        Print #ghPy, "        self.__ClientHeight = new_value"
+        Print #ghPy, "        if self.__FixedSize:"
+        Print #ghPy, "            self.setFixedSize(self.__ClientWidth, self.__ClientHeight)"
+        Print #ghPy, "        else:"
+        Print #ghPy, "            self.resize(self.__ClientWidth, self.__ClientHeight)"
+        '
         ' Font.
         Print #ghPy, vbNullString
         Print #ghPy, "    # Note that, for this main form, this font doesn't affect the caption, as that's controlled by the OS."

@@ -577,8 +577,8 @@ Private Sub PresetCtrlPropDefaults(uCtrl As CtrlType)
         '
         ' Appearance.
         Select Case .ClassName
-        Case "Shape", "Line":                   .Appearance = ccFlat
-        Case Else:                              .Appearance = cc3D
+        Case "Shape", "Line":                   .Appearance = vbFlat
+        Case Else:                              .Appearance = vb3D
         End Select
         '
         ' Backcolor.
@@ -590,8 +590,8 @@ Private Sub PresetCtrlPropDefaults(uCtrl As CtrlType)
         '
         ' BackStyle.
         Select Case .ClassName
-        Case "Shape":                           .BackStyle = 0&         ' Transparent.
-        Case Else:                              .BackStyle = 1&         ' Opaque.
+        Case "Shape":                           .BackStyle = vbTransparent
+        Case Else:                              .BackStyle = vbOpaque
         End Select
         '
         ' BorderStyle.

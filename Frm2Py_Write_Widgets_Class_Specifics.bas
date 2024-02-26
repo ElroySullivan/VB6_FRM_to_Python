@@ -23,18 +23,18 @@ Public Sub DoCommandButtonClass(uCtrl As CtrlType)
         Dim sStyle As String
         sStyle = sStyle & "background-color: " & RgbHex(.BackColor) & "; "
         sStyle = sStyle & "color: " & RgbHex(.ForeColor) & "; "
-      If .Appearance = ccFlat Then
+      If .Appearance = vbFlat Then
         sStyle = sStyle & "border: 1px solid black; "
       End If
         sStyle = Trim$(sStyle)
         ' Tag, Tooltip, and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         Print #ghPy, "            self.setToolTip('"; .ToolTipText; "') # These html tags work: <b> <i> <u> <font> <br> <p> <a>, as well as \n for new lines."
-        Print #ghPy, "            w = "; CStr(.Width); "; h = "; CStr(.Height); "; l = "; CStr(.Left); "; t = "; CStr(.Top)
-        Print #ghPy, "            self.setGeometry(l, t, w, h)"
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         ' Deal with caption.
         Print #ghPy, "            self.InternalCaption = PassThruWrapLabel(self, '"; .Caption; "', Qt.AlignCenter, font, '"; RgbHex(.BackColor); "', '"; RgbHex(.ForeColor); "', False)"
-        Print #ghPy, "            self.InternalCaption.setGeometry(2, 2, w-4, h-4)"
+        Print #ghPy, "            self.InternalCaption.setGeometry(2, 2, self.__w-4, self.__h-4)"
         ' Set style, enabled, visible.
         Print #ghPy, "            self.setStyleSheet('"; sStyle; "')"
         Print #ghPy, "            self.setEnabled("; TrueFalse(.Enabled); ")"
@@ -53,6 +53,45 @@ Public Sub DoCommandButtonClass(uCtrl As CtrlType)
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
         '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         Print #ghPy, vbNullString
         Print #ghPy, "        @property                   # No setter needed, as this is all handled by the clsVb6Font class."
         Print #ghPy, "        def Font(self):             # The return isn't meant to be saved as the widget stays attached to clsFont."
@@ -133,11 +172,11 @@ Public Sub DoCheckBoxClass(uCtrl As CtrlType)
         ' Tag, Tooltip, and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         Print #ghPy, "            self.setToolTip('"; .ToolTipText; "') # These html tags work: <b> <i> <u> <font> <br> <p> <a>, as well as \n for new lines."
-        Print #ghPy, "            w = "; CStr(.Width); "; h = "; CStr(.Height); "; l = "; CStr(.Left); "; t = "; CStr(.Top)
-        Print #ghPy, "            self.setGeometry(l, t, w, h)"
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         ' Deal with caption.
         Print #ghPy, "            self.InternalCaption = PassThruWrapLabel(self, '"; .Caption; "', Qt.AlignLeft | Qt.AlignVCenter, font, '"; RgbHex(.BackColor); "', '"; RgbHex(.ForeColor); "')"
-        Print #ghPy, "            self.InternalCaption.setGeometry(16, 1, w-17, h-2)"
+        Print #ghPy, "            self.InternalCaption.setGeometry(16, 1, self.__w-17, self.__h-2)"
         ' Set style, enabled, visible.
         Print #ghPy, "            self.setStyleSheet('"; sStyle; "')"
         Print #ghPy, "            self.setEnabled("; TrueFalse(.Enabled); ")"
@@ -165,6 +204,49 @@ Public Sub DoCheckBoxClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.InternalCaption.setGeometry(16, 1, self.__w-17, self.__h-2)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.InternalCaption.setGeometry(16, 1, self.__w-17, self.__h-2)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.InternalCaption.setGeometry(16, 1, self.__w-17, self.__h-2)"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property                   # No setter needed, as this is all handled by the clsVb6Font class."
@@ -253,11 +335,11 @@ Public Sub DoOptionButtonClass(uCtrl As CtrlType)
         ' Tag, Tooltip, and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         Print #ghPy, "            self.setToolTip('"; .ToolTipText; "') # These html tags work: <b> <i> <u> <font> <br> <p> <a>, as well as \n for new lines."
-        Print #ghPy, "            w = "; CStr(.Width); "; h = "; CStr(.Height); "; l = "; CStr(.Left); "; t = "; CStr(.Top)
-        Print #ghPy, "            self.setGeometry(l, t, w, h)"
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         ' Deal with caption.
         Print #ghPy, "            self.InternalCaption = PassThruWrapLabel(self, '"; .Caption; "', Qt.AlignLeft | Qt.AlignVCenter, font, '"; RgbHex(.BackColor); "', '"; RgbHex(.ForeColor); "')"
-        Print #ghPy, "            self.InternalCaption.setGeometry(16, 1, w-17, h-2)"
+        Print #ghPy, "            self.InternalCaption.setGeometry(16, 1, self.__w-17, self.__h-2)"
         ' Set style, enabled, visible.
         Print #ghPy, "            self.setStyleSheet('"; sStyle; "')"
         Print #ghPy, "            self.setEnabled("; TrueFalse(.Enabled); ")"
@@ -280,6 +362,49 @@ Public Sub DoOptionButtonClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.InternalCaption.setGeometry(16, 1, self.__w-17, self.__h-2)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.InternalCaption.setGeometry(16, 1, self.__w-17, self.__h-2)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.InternalCaption.setGeometry(16, 1, self.__w-17, self.__h-2)"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property                   # No setter needed, as this is all handled by the clsVb6Font class."
@@ -366,7 +491,7 @@ Public Sub DoTextBoxMultiLineClass(uCtrl As CtrlType)
       Select Case True
       Case .BorderStyle = vbBSNone
         sStyle = sStyle & "QPlainTextEdit{border: 0px;} "
-      Case .Appearance = ccFlat
+      Case .Appearance = vbFlat
         sStyle = sStyle & "QPlainTextEdit{border: 1px solid black;} "
       Case Else ' 3D border.
         sStyle = sStyle & "QPlainTextEdit{border: 2px inset gray;} "
@@ -375,8 +500,8 @@ Public Sub DoTextBoxMultiLineClass(uCtrl As CtrlType)
         ' Tag, Tooltip, and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         Print #ghPy, "            self.setToolTip('"; .ToolTipText; "') # These html tags work: <b> <i> <u> <font> <br> <p> <a>, as well as \n for new lines."
-        Print #ghPy, "            w = "; CStr(.Width); "; h = "; CStr(.Height); "; l = "; CStr(.Left); "; t = "; CStr(.Top)
-        Print #ghPy, "            self.setGeometry(l, t, w, h)"
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         ' Alignment. It's complicated for these QPlainTextEdit widgets, so we're going to skip it on a first pass.
         Print #ghPy, "            # We let alignment default to 'left' and may work on it more later."
         ' Scrollbars.
@@ -412,6 +537,46 @@ Public Sub DoTextBoxMultiLineClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property                   # No setter needed, as this is all handled by the clsVb6Font class."
@@ -490,7 +655,7 @@ Public Sub DoTextBoxSingleLineClass(uCtrl As CtrlType)
       Select Case True
       Case .BorderStyle = vbBSNone
         sStyle = sStyle & "border: 0px; "
-      Case .Appearance = ccFlat
+      Case .Appearance = vbFlat
         sStyle = sStyle & "border: 1px solid black; "
       Case Else ' 3D border.
         sStyle = sStyle & "border: 2px inset gray; "
@@ -499,8 +664,8 @@ Public Sub DoTextBoxSingleLineClass(uCtrl As CtrlType)
         ' Tag, Tooltip, and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         Print #ghPy, "            self.setToolTip('"; .ToolTipText; "') # These html tags work: <b> <i> <u> <font> <br> <p> <a>, as well as \n for new lines."
-        Print #ghPy, "            w = "; CStr(.Width); "; h = "; CStr(.Height); "; l = "; CStr(.Left); "; t = "; CStr(.Top)
-        Print #ghPy, "            self.setGeometry(l, t, w, h)"
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         ' Alignment. We always go vertical top, as that's what VB6 does.
       Select Case .Alignment
       Case vbRightJustify
@@ -531,6 +696,46 @@ Public Sub DoTextBoxSingleLineClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property                   # No setter needed, as this is all handled by the clsVb6Font class."
@@ -614,7 +819,7 @@ Public Sub DoFrameClass(uCtrl As CtrlType)
       Select Case True
       Case .BorderStyle = vbBSNone
         Print #ghPy, "            self.__Border = 0"
-      Case .Appearance = ccFlat
+      Case .Appearance = vbFlat
         Print #ghPy, "            self.__Border = 1"
       Case Else ' 3D border.
         Print #ghPy, "            self.__Border = 2"
@@ -622,8 +827,8 @@ Public Sub DoFrameClass(uCtrl As CtrlType)
         ' Tag, Tooltip, and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         Print #ghPy, "            self.setToolTip('"; .ToolTipText; "') # These html tags work: <b> <i> <u> <font> <br> <p> <a>, as well as \n for new lines."
-        Print #ghPy, "            w = "; CStr(.Width); "; h = "; CStr(.Height); "; l = "; CStr(.Left); "; t = "; CStr(.Top)
-        Print #ghPy, "            self.setGeometry(l, t, w, h)"
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         ' Deal with caption.
         Print #ghPy, "            caption_text = '"; .Caption; "'"
         Print #ghPy, "            font_metrics = QFontMetrics(font)"
@@ -648,6 +853,49 @@ Public Sub DoFrameClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.repaint()"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property                   # No setter needed, as this is all handled by the clsVb6Font class."
@@ -705,15 +953,15 @@ Public Sub DoFrameClass(uCtrl As CtrlType)
         Print #ghPy, "                painter = QPainter(self)"
         Print #ghPy, "                painter.setBrush(QBrush(Qt.transparent))"
         Print #ghPy, "                painter.setPen(QPen(QColor('#000000'), 1))"
-        Print #ghPy, "                painter.drawRect(0, caption_height//2, self.width()-1, self.height()-caption_height//2-1)"
+        Print #ghPy, "                painter.drawRect(0, caption_height//2, self.__w-1, self.__h-caption_height//2-1)"
         Print #ghPy, "                return"
         Print #ghPy, "            if self.__Border == 2:"
         Print #ghPy, "                painter = QPainter(self)"
         Print #ghPy, "                painter.setBrush(QBrush(Qt.transparent))"
         Print #ghPy, "                painter.setPen(QPen(QColor('#C0C0C0'), 2))" ' #C0C0C0 & #808080 is what 'border: 2px inset gray;' uses.
-        Print #ghPy, "                painter.drawRect(1, caption_height//2+1, self.width()-2, self.height()-caption_height//2-2)"
+        Print #ghPy, "                painter.drawRect(1, caption_height//2+1, self.__w-2, self.__h-caption_height//2-2)"
         Print #ghPy, "                painter.setPen(QPen(QColor('#808080'), 1))"
-        Print #ghPy, "                painter.drawRect(0, caption_height//2, self.width()-2, self.height()-caption_height//2-2)"
+        Print #ghPy, "                painter.drawRect(0, caption_height//2, self.__w-2, self.__h-caption_height//2-2)"
         Print #ghPy, "                return"
     End With
 End Sub
@@ -755,7 +1003,7 @@ Public Sub DoPictureBoxClass(uCtrl As CtrlType)
       Case .BorderStyle = vbBSNone
         sStyle = sStyle & "border: 0px; "
         Print #ghPy, "            self.__Border = 0"
-      Case .Appearance = ccFlat
+      Case .Appearance = vbFlat
         sStyle = sStyle & "border: 1px solid black; "
         Print #ghPy, "            self.__Border = 1"
       Case Else ' 3D border.
@@ -766,8 +1014,8 @@ Public Sub DoPictureBoxClass(uCtrl As CtrlType)
         ' Tag, Tooltip, and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         Print #ghPy, "            self.setToolTip('"; .ToolTipText; "') # These html tags work: <b> <i> <u> <font> <br> <p> <a>, as well as \n for new lines."
-        Print #ghPy, "            w = "; CStr(.Width); "; h = "; CStr(.Height); "; l = "; CStr(.Left); "; t = "; CStr(.Top)
-        Print #ghPy, "            self.setGeometry(l, t, w, h)"
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         ' Set style, enabled, visible.
         Print #ghPy, "            self.setStyleSheet('"; sStyle; "')"
         Print #ghPy, "            self.setEnabled("; TrueFalse(.Enabled); ")"
@@ -785,6 +1033,49 @@ Public Sub DoPictureBoxClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.repaint()"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property                   # No setter needed, as this is all handled by the clsVb6Font class."
@@ -862,7 +1153,7 @@ Public Sub DoListBoxClass(uCtrl As CtrlType)
         sStyle = sStyle & "QScrollBar:horizontal{background-color: #F0F0F0;} "
       Select Case True
       ' There is no option in VB6 to turn off the border on these.
-      Case .Appearance = ccFlat
+      Case .Appearance = vbFlat
         sStyle = sStyle & "QListWidget{border: 1px solid black;} "
       Case Else ' 3D border.
         sStyle = sStyle & "QListWidget{border: 2px inset gray;} "
@@ -871,8 +1162,8 @@ Public Sub DoListBoxClass(uCtrl As CtrlType)
         ' Tag, Tooltip, and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         Print #ghPy, "            self.setToolTip('"; .ToolTipText; "') # These html tags work: <b> <i> <u> <font> <br> <p> <a>, as well as \n for new lines."
-        Print #ghPy, "            w = "; CStr(.Width); "; h = "; CStr(.Height); "; l = "; CStr(.Left); "; t = "; CStr(.Top)
-        Print #ghPy, "            self.setGeometry(l, t, w, h)"
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         ' Set style, enabled, visible.
         Print #ghPy, "            self.setStyleSheet('"; sStyle; "')"
         Print #ghPy, "            self.setEnabled("; TrueFalse(.Enabled); ")"
@@ -908,6 +1199,46 @@ Public Sub DoListBoxClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property                   # No setter needed, as this is all handled by the clsVb6Font class."
@@ -993,7 +1324,7 @@ Public Sub DoComboBoxClass(uCtrl As CtrlType)
         sStyle = sStyle & "background-color: " & RgbHex(.BackColor) & "; color: " & RgbHex(.ForeColor) & "; "
       Select Case True
       ' There is no option in VB6 to turn off the border on these.
-      Case .Appearance = ccFlat
+      Case .Appearance = vbFlat
         sStyle = sStyle & "border: 1px solid black; "
       Case Else ' 3D border.
         sStyle = sStyle & "border: 2px inset gray; "
@@ -1003,8 +1334,8 @@ Public Sub DoComboBoxClass(uCtrl As CtrlType)
         ' Tag, Tooltip, and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         Print #ghPy, "            self.setToolTip('"; .ToolTipText; "') # These html tags work: <b> <i> <u> <font> <br> <p> <a>, as well as \n for new lines."
-        Print #ghPy, "            w = "; CStr(.Width); "; h = "; CStr(.Height); "; l = "; CStr(.Left); "; t = "; CStr(.Top)
-        Print #ghPy, "            self.setGeometry(l, t, w, h)"
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         ' Set enabled, visible.
         Print #ghPy, "            self.setEnabled("; TrueFalse(.Enabled); ")"
         Print #ghPy, "            self.setVisible("; TrueFalse(.Visible); ")"
@@ -1036,6 +1367,46 @@ Public Sub DoComboBoxClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property                   # No setter needed, as this is all handled by the clsVb6Font class."
@@ -1117,7 +1488,7 @@ Public Sub DoLabelClass(uCtrl As CtrlType)
       Case .BackStyle = vbTransparent And .BorderStyle = vbBSNone   ' Transparent without border.
         sStyle = sStyle & "background-color: rgba(0, 0, 0, 0)" & "; "
         sStyle = sStyle & "border: 0px; "
-      Case .BackStyle = vbTransparent And .Appearance = ccFlat      ' Transparent with flat border.
+      Case .BackStyle = vbTransparent And .Appearance = vbFlat      ' Transparent with flat border.
         sStyle = sStyle & "background-color: rgba(0, 0, 0, 0)" & "; "
         sStyle = sStyle & "border: 1px solid black; "
       Case .BackStyle = vbTransparent                               ' Transparent with 3D border.
@@ -1126,7 +1497,7 @@ Public Sub DoLabelClass(uCtrl As CtrlType)
       Case .BorderStyle = vbBSNone                                  ' Opaque without border.
         sStyle = sStyle & "background-color: " & RgbHex(.BackColor) & "; "
         sStyle = sStyle & "border: 0px; "
-      Case .Appearance = ccFlat                                     ' Opaque with flat border.
+      Case .Appearance = vbFlat                                     ' Opaque with flat border.
         sStyle = sStyle & "background-color: " & RgbHex(.BackColor) & "; "
         sStyle = sStyle & "border: 1px solid black; "
       Case Else                                                     ' Opaque with 3D border.
@@ -1137,8 +1508,8 @@ Public Sub DoLabelClass(uCtrl As CtrlType)
         ' Tag, Tooltip, and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         Print #ghPy, "            self.setToolTip('"; .ToolTipText; "') # These html tags work: <b> <i> <u> <font> <br> <p> <a>, as well as \n for new lines."
-        Print #ghPy, "            w = "; CStr(.Width); "; h = "; CStr(.Height); "; l = "; CStr(.Left); "; t = "; CStr(.Top)
-        Print #ghPy, "            self.setGeometry(l-1, t, w+1, h) # Small adjustment needed, bug in PyQt?"
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
+        Print #ghPy, "            self.setGeometry(self.__l-1, self.__t, self.__w+1, self.__h) # Small adjustment needed, bug in PyQt?"
         ' Alignment. We always go vertical top, as that's what VB6 does.
       Select Case .Alignment
       Case vbRightJustify
@@ -1164,6 +1535,46 @@ Public Sub DoLabelClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property                   # No setter needed, as this is all handled by the clsVb6Font class."
@@ -1242,7 +1653,7 @@ Public Sub DoImageClass(uCtrl As CtrlType)
       Case .BorderStyle = vbBSNone
         sStyle = sStyle & "border: 0px; "
         Print #ghPy, "            self.__Border = 0"
-      Case .Appearance = ccFlat
+      Case .Appearance = vbFlat
         sStyle = sStyle & "border: 1px solid black; "
         Print #ghPy, "            self.__Border = 1"
       Case Else ' 3D border.
@@ -1253,8 +1664,8 @@ Public Sub DoImageClass(uCtrl As CtrlType)
         ' Tag, Tooltip, and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
         Print #ghPy, "            self.setToolTip('"; .ToolTipText; "') # These html tags work: <b> <i> <u> <font> <br> <p> <a>, as well as \n for new lines."
-        Print #ghPy, "            w = "; CStr(.Width); "; h = "; CStr(.Height); "; l = "; CStr(.Left); "; t = "; CStr(.Top)
-        Print #ghPy, "            self.setGeometry(l, t, w, h)"
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
         ' Set style, enabled, visible.
         Print #ghPy, "            self.setStyleSheet('"; sStyle; "')"
         Print #ghPy, "            self.setEnabled("; TrueFalse(.Enabled); ")"
@@ -1268,6 +1679,49 @@ Public Sub DoImageClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.setGeometry(self.__l, self.__t, self.__w, self.__h)"
+        Print #ghPy, "            self.repaint()"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property                   # No setter needed, as this is all handled by the clsVb6Font class."
@@ -1338,7 +1792,7 @@ Public Sub DoLineClass(uCtrl As CtrlType)
         Print #ghPy, "            self.Index = "; CStr(.Index)
         ' Tag and geometry.
         Print #ghPy, "            self.Tag = '"; .Tag; "' # VB6 style 'TAG' property."
-        Print #ghPy, "            self.x1 = "; CStr(.X1); "; self.y1 = "; CStr(.Y1); "; self.x2 = "; CStr(.X2); "; self.y2 = "; CStr(.Y2)
+        Print #ghPy, "            self.__X1 = "; CStr(.X1); "; self.__Y1 = "; CStr(.Y1); "; self.__X2 = "; CStr(.X2); "; self.__Y2 = "; CStr(.Y2)
         ' Visible & enabled.
         Print #ghPy, "            self.__visible = "; TrueFalse(.Visible)
         Print #ghPy, "            self.__enabled = True # Just a dummy, lines have no actual enabled property."
@@ -1368,6 +1822,45 @@ Public Sub DoLineClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, "        def Move(self, new_X1: int, new_Y1: int, new_X2: int, new_Y2: int):"
+        Print #ghPy, "            self.__X1 = new_X1"
+        Print #ghPy, "            self.__Y1 = new_Y1"
+        Print #ghPy, "            self.__X2 = new_X2"
+        Print #ghPy, "            self.__Y2 = new_Y2"
+        Print #ghPy, "            self.Container.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def X1(self):"
+        Print #ghPy, "            return self.__X1"
+        Print #ghPy, "        @X1.setter"
+        Print #ghPy, "        def X1(self, new_value: int):"
+        Print #ghPy, "            self.__X1 = new_value"
+        Print #ghPy, "            self.Container.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Y1(self):"
+        Print #ghPy, "            return self.__Y1"
+        Print #ghPy, "        @Y1.setter"
+        Print #ghPy, "        def Y1(self, new_value: int):"
+        Print #ghPy, "            self.__Y1 = new_value"
+        Print #ghPy, "            self.Container.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def X2(self):"
+        Print #ghPy, "            return self.__X2"
+        Print #ghPy, "        @X2.setter"
+        Print #ghPy, "        def X2(self, new_value: int):"
+        Print #ghPy, "            self.__X2 = new_value"
+        Print #ghPy, "            self.Container.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Y2(self):"
+        Print #ghPy, "            return self.__Y2"
+        Print #ghPy, "        @Y2.setter"
+        Print #ghPy, "        def Y2(self, new_value: int):"
+        Print #ghPy, "            self.__Y2 = new_value"
+        Print #ghPy, "            self.Container.repaint()"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property"
@@ -1399,7 +1892,7 @@ Public Sub DoLineClass(uCtrl As CtrlType)
         Print #ghPy, "            pen.setWidth(self.BorderWidth)"
         Print #ghPy, "            pen.setStyle(self.BorderStyle)"
         Print #ghPy, "            painter.setPen(pen)"
-        Print #ghPy, "            painter.drawLine(self.x1, self.y1, self.x2, self.y2)"
+        Print #ghPy, "            painter.drawLine(self.__X1, self.__Y1, self.__X2, self.__Y2)"
     End With
 End Sub
 
@@ -1439,7 +1932,7 @@ Public Sub DoShapeClass(uCtrl As CtrlType)
             ' If they're equal, no adjustment needed.
             End Select
         End If
-        Print #ghPy, "            self.Width = "; CStr(.Width); "; self.Height = "; CStr(.Height); "; self.Left = "; CStr(.Left); "; self.Top = "; CStr(.Top)
+        Print #ghPy, "            self.__w = "; CStr(.Width); "; self.__h = "; CStr(.Height); "; self.__l = "; CStr(.Left); "; self.__t = "; CStr(.Top)
         ' Visible & enabled.
         Print #ghPy, "            self.__visible = "; TrueFalse(.Visible)
         Print #ghPy, "            self.__enabled = True # Just a dummy, shapes have no actual enabled property."
@@ -1469,6 +1962,46 @@ Public Sub DoShapeClass(uCtrl As CtrlType)
         ' Python properties & methods, VB6 style.
         Print #ghPy, vbNullString
         Print #ghPy, "        # Widget custom properties (VB6 style).  Use PyQt members for all others."
+        '
+        Print #ghPy, vbNullString
+        Print #ghPy, "        def Move(self, new_left: int, new_top: int, new_width: int, new_height: int):"
+        Print #ghPy, "            self.__l = new_left"
+        Print #ghPy, "            self.__t = new_top"
+        Print #ghPy, "            self.__w = new_width"
+        Print #ghPy, "            self.__h = new_height"
+        Print #ghPy, "            self.Container.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Left(self):"
+        Print #ghPy, "            return self.__l"
+        Print #ghPy, "        @Left.setter"
+        Print #ghPy, "        def Left(self, new_value: int):"
+        Print #ghPy, "            self.__l = new_value"
+        Print #ghPy, "            self.Container.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Top(self):"
+        Print #ghPy, "            return self.__t"
+        Print #ghPy, "        @Top.setter"
+        Print #ghPy, "        def Top(self, new_value: int):"
+        Print #ghPy, "            self.__t = new_value"
+        Print #ghPy, "            self.Container.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Width(self):"
+        Print #ghPy, "            return self.__w"
+        Print #ghPy, "        @Width.setter"
+        Print #ghPy, "        def Width(self, new_value: int):"
+        Print #ghPy, "            self.__w = new_value"
+        Print #ghPy, "            self.Container.repaint()"
+        Print #ghPy, vbNullString
+        Print #ghPy, "        @property"
+        Print #ghPy, "        def Height(self):"
+        Print #ghPy, "            return self.__h"
+        Print #ghPy, "        @Height.setter"
+        Print #ghPy, "        def Height(self, new_value: int):"
+        Print #ghPy, "            self.__h = new_value"
+        Print #ghPy, "            self.Container.repaint()"
         '
         Print #ghPy, vbNullString
         Print #ghPy, "        @property"
@@ -1506,13 +2039,13 @@ Public Sub DoShapeClass(uCtrl As CtrlType)
         Print #ghPy, "                brush = QBrush(Qt.transparent)"
         Print #ghPy, "            painter.setBrush(brush)"
         Print #ghPy, "            if self.Shape == 0 or self.Shape == 1: # Square or rectangle."
-        Print #ghPy, "                painter.drawRect(self.Left, self.Top, self.Width, self.Height)"
+        Print #ghPy, "                painter.drawRect(self.__l, self.__t, self.__w, self.__h)"
         Print #ghPy, "            elif self.Shape == 2 or self.Shape == 3: # Oval or circle."
         Print #ghPy, "                painter.setRenderHint(QPainter.Antialiasing)"
-        Print #ghPy, "                painter.drawEllipse(self.Left, self.Top, self.Width, self.Height)"
+        Print #ghPy, "                painter.drawEllipse(self.__l, self.__t, self.__w, self.__h)"
         Print #ghPy, "            else: # self.Shape == 4 or self.Shape == 5: # Rounded square or rounded rectangle."
         Print #ghPy, "                painter.setRenderHint(QPainter.Antialiasing)"
-        Print #ghPy, "                rect = QRect(self.Left, self.Top, self.Width, self.Height)"
+        Print #ghPy, "                rect = QRect(self.__l, self.__t, self.__w, self.__h)"
         Print #ghPy, "                painter.drawRoundedRect(rect, 20, 20, mode=Qt.RelativeSize)"
     End With
 End Sub
