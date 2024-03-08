@@ -146,8 +146,8 @@ ExistsError:
     FolderExists = False
 End Function
 
-Public Function RgbHex(ByVal iColor As Long) As String
-    ' Returns string formatted as: #rrggbb (not like VB6, but like python).
+Public Function RgbaHex(ByVal iColor As Long, Optional bTransparent As Boolean) As String
+    ' Returns string formatted as: #rrggbbaa (not like VB6, but like python).
     ' Includes the # sign upon return.
     ' Converts Windows system colors, if needed.
     Dim r As Long, g As Long, b As Long
@@ -155,7 +155,11 @@ Public Function RgbHex(ByVal iColor As Long) As String
     r = iColor And &HFF
     g = (iColor \ &H100&) And &HFF
     b = (iColor \ &H10000) And &HFF
-    RgbHex = "#" & Right$("0" & Hex$(r), 2&) & Right$("0" & Hex$(g), 2&) & Right$("0" & Hex$(b), 2&)
+    If bTransparent Then
+        RgbaHex = "#" & Right$("0" & Hex$(r), 2&) & Right$("0" & Hex$(g), 2&) & Right$("0" & Hex$(b), 2&) & "00"
+    Else
+        RgbaHex = "#" & Right$("0" & Hex$(r), 2&) & Right$("0" & Hex$(g), 2&) & Right$("0" & Hex$(b), 2&) & "FF"
+    End If
 End Function
 
 

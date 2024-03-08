@@ -219,6 +219,7 @@ Public Function PopulatedFormUdt() As Boolean
                                                                                 .BorderStyle = vbSizable            ' If it sizable, the VB6 IDE doesn't put the property in the frm file.
                                                                                 .BackColor = &H8000000F             ' It may not appear in FRM file, and this is the default.
                                                                                 .Enabled = True
+                                                                                .ForeColor = &H80000012
                                                                                 .Visible = True                     ' It may not appear in FRM file, and default is True.
         '
         ' Parse form into its UDT.
@@ -228,6 +229,7 @@ Public Function PopulatedFormUdt() As Boolean
             Select Case True
             Case LeftMatch(gsUiLines(i), "Begin VB.Form"):                      .Name = Mid$(gsUiLines(i), InStrRev(gsUiLines(i), " ") + 1&) ' No ' nor " allowed by VB6.
             Case LeftMatch(gsUiLines(i), "   BackColor"):                       .BackColor = CLngEx(AfterEqual(gsUiLines(i)))
+            Case LeftMatch(gsUiLines(i), "   ForeColor"):                       .ForeColor = CLngEx(AfterEqual(gsUiLines(i)))
             Case LeftMatch(gsUiLines(i), "   BorderStyle"):                     .BorderStyle = CLng(AfterEqual(gsUiLines(i)))
             Case LeftMatch(gsUiLines(i), "   Caption"):                         .Caption = GetStringValue(gsUiLines(i))
             Case LeftMatch(gsUiLines(i), "   ClientHeight"):                    .ClientHeight = CLng(AfterEqual(gsUiLines(i)))

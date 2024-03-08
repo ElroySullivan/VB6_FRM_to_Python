@@ -1,6 +1,10 @@
 Attribute VB_Name = "mod_Frm2Py__Globals"
 Option Explicit
 '
+' Testing constants.
+Public Const DoFormEvents = False ' Set to TRUE for production code.
+'
+' Enumerations.
 Public Enum AppearanceEnum
     vbFlat = 0&
     vb3D = 1&
@@ -16,6 +20,7 @@ End Enum
     Dim vbTransparent, vbOpaque
 #End If
 '
+' Types.
 Public Type FontType
     Name            As String
     Size            As Single
@@ -40,6 +45,7 @@ Public Type FormType
     ControlBox      As Boolean
     Enabled         As Boolean
     Font            As FontType     ' This is used only in the cases where controls don't have font specification.
+    ForeColor       As Long
     Icon            As String       ' After processing, this will be the file's name (no path).
     MaxButton       As Boolean
     MDIChild        As Boolean      ' Just used to check to make sure it's NOT an MDI child.

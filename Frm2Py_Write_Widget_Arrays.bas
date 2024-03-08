@@ -36,7 +36,7 @@ Public Sub DoWidget_Arrays()
     For Each v In collIndexed
         sOrigName = v
                     Print #ghPy, vbNullString
-                    Print #ghPy, "    def "; sOrigName; "(self, Index):"
+                    Print #ghPy, "    def "; sOrigName; "(self, Index: int):"
         For pCtl = 0& To UBound(guCtls)
             With guCtls(pCtl)
                 If .OrigName = sOrigName Then

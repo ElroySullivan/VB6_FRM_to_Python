@@ -270,28 +270,28 @@ Private Sub AddExternalWidgetEventProc(collProcsDone As Collection, sProcName As
         Case "_Click"
             Print #ghPy, vbNullString
             Print #ghPy, "def "; sProcName; "("; sIndex; "self, event):"
-            Print #ghPy, "    print('"; sProcName; "', self.Name, self.Container.Name, self.Form.Name)"
+            Print #ghPy, "    print('"; sProcName; "', self.objectName(), self.Container.objectName(), self.Form.objectName())"
         End Select
     Case "CheckBox"
         Select Case sSuffix
         Case "_Click"
             Print #ghPy, vbNullString
             Print #ghPy, "def "; sProcName; "("; sIndex; "self, state):"
-            Print #ghPy, "    print('"; sProcName; "', self.Name, self.Container.Name, self.Form.Name, 'State:', state)"
+            Print #ghPy, "    print('"; sProcName; "', self.objectName(), self.Container.objectName(), self.Form.objectName(), 'State:', state)"
         End Select
     Case "OptionButton"
         Select Case sSuffix
         Case "_Click"
             Print #ghPy, vbNullString
             Print #ghPy, "def "; sProcName; "("; sIndex; "self, state):"
-            Print #ghPy, "    print('"; sProcName; "', self.Name, self.Container.Name, self.Form.Name, 'State:', state)"
+            Print #ghPy, "    print('"; sProcName; "', self.objectName(), self.Container.objectName(), self.Form.objectName(), 'State:', state)"
         End Select
     Case "TextBox"
         Select Case sSuffix
         Case "_Change"
             Print #ghPy, vbNullString
             Print #ghPy, "def "; sProcName; "("; sIndex; "self, text):"
-            Print #ghPy, "    print('"; sProcName; "', self.Name, self.Container.Name, self.Form.Name, 'Text:', text)"
+            Print #ghPy, "    print('"; sProcName; "', self.objectName(), self.Container.objectName(), self.Form.objectName(), 'Text:', text)"
         End Select
     Case "Frame"            ' None, at this time.
     Case "PictureBox"       ' None, at this time.
@@ -310,7 +310,7 @@ Private Sub AddExternalWidgetEventProc(collProcsDone As Collection, sProcName As
         Case "_Change"
             Print #ghPy, vbNullString
             Print #ghPy, "def "; sProcName; "("; sIndex; "self, text):"
-            Print #ghPy, "    print('"; sProcName; "', self.Name, self.Container.Name, self.Form.Name, 'Text:', text)"
+            Print #ghPy, "    print('"; sProcName; "', self.objectName(), self.Container.objectName(), self.Form.objectName(), 'Text:', text)"
         End Select
     '
     ' Lightweight ones.
